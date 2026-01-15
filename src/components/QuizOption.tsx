@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/contexts/AppContext';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface QuizOptionProps {
   option: string;
@@ -25,6 +26,28 @@ const QuizOption: React.FC<QuizOptionProps> = ({
   disabled,
 }) => {
   const { settings } = useApp();
+  const { playCorrect, playWrong, playTap } = useSoundEffects();
+  const hasPlayedSound = useRef(false);
+
+  // Play sound when result is shown
+  useEffect(() => {
+    if (showResult && isSelected && !hasPlayedSound.current) {
+      hasPlayedSound.current = true;
+      if (isCorrect) {
+        playCorrect();
+      } else {
+        playWrong();
+      }
+    }
+    if (!showResult) {
+      hasPlayedSound.current = false;
+    }
+  }, [showResult, isSelected, isCorrect, playCorrect, playWrong]);
+
+  const handleSelect = () => {
+    playTap();
+    onSelect();
+  };
 
   const getOptionState = () => {
     if (!showResult) {
@@ -39,7 +62,7 @@ const QuizOption: React.FC<QuizOptionProps> = ({
 
   return (
     <button
-      onClick={onSelect}
+      onClick={handleSelect}
       disabled={disabled}
       className={cn(
         'quiz-option w-full flex items-center gap-4 text-left',
