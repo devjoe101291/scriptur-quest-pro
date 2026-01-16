@@ -2,11 +2,22 @@ import { useCallback, useRef, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 
 type SoundType = 'tap' | 'correct' | 'wrong' | 'complete' | 'streak' | 'select';
+type HapticType = 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error';
 
 interface AudioContextRef {
   context: AudioContext | null;
   gainNode: GainNode | null;
 }
+
+// Haptic patterns (duration in ms)
+const hapticPatterns: Record<HapticType, number[]> = {
+  light: [10],
+  medium: [25],
+  heavy: [50],
+  success: [20, 50, 30],
+  warning: [30, 30, 30],
+  error: [50, 100, 50],
+};
 
 // Sound generation parameters for each type
 const soundConfigs: Record<SoundType, {
@@ -102,6 +113,21 @@ export const useSoundEffects = () => {
     };
   }, []);
 
+  // Haptic feedback using Vibration API
+  const vibrate = useCallback((type: HapticType) => {
+    if (!settings.soundEnabled) return; // Use sound setting for haptics too
+    
+    // Check if vibration is supported
+    if ('vibrate' in navigator) {
+      const pattern = hapticPatterns[type];
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {
+        // Silently fail if vibration not allowed
+      }
+    }
+  }, [settings.soundEnabled]);
+
   const playSound = useCallback((type: SoundType) => {
     if (!settings.soundEnabled) return;
     
@@ -152,15 +178,40 @@ export const useSoundEffects = () => {
     }
   }, [settings.soundEnabled, initAudio]);
 
-  const playTap = useCallback(() => playSound('tap'), [playSound]);
-  const playSelect = useCallback(() => playSound('select'), [playSound]);
-  const playCorrect = useCallback(() => playSound('correct'), [playSound]);
-  const playWrong = useCallback(() => playSound('wrong'), [playSound]);
-  const playComplete = useCallback(() => playSound('complete'), [playSound]);
-  const playStreak = useCallback(() => playSound('streak'), [playSound]);
+  // Combined sound + haptic functions
+  const playTap = useCallback(() => {
+    playSound('tap');
+    vibrate('light');
+  }, [playSound, vibrate]);
+
+  const playSelect = useCallback(() => {
+    playSound('select');
+    vibrate('light');
+  }, [playSound, vibrate]);
+
+  const playCorrect = useCallback(() => {
+    playSound('correct');
+    vibrate('success');
+  }, [playSound, vibrate]);
+
+  const playWrong = useCallback(() => {
+    playSound('wrong');
+    vibrate('error');
+  }, [playSound, vibrate]);
+
+  const playComplete = useCallback(() => {
+    playSound('complete');
+    vibrate('success');
+  }, [playSound, vibrate]);
+
+  const playStreak = useCallback(() => {
+    playSound('streak');
+    vibrate('medium');
+  }, [playSound, vibrate]);
 
   return {
     playSound,
+    vibrate,
     playTap,
     playSelect,
     playCorrect,

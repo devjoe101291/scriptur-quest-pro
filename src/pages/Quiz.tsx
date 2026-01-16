@@ -22,13 +22,14 @@ const Quiz: React.FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isNavigatingToResults, setIsNavigatingToResults] = useState(false);
 
-  // Redirect if no session
+  // Redirect if no session (but not if we're navigating to results)
   useEffect(() => {
-    if (!currentSession) {
+    if (!currentSession && !isNavigatingToResults) {
       navigate('/');
     }
-  }, [currentSession, navigate]);
+  }, [currentSession, navigate, isNavigatingToResults]);
 
   if (!currentSession) {
     return null;
@@ -61,6 +62,8 @@ const Quiz: React.FC = () => {
 
   const handleNext = () => {
     if (isLastQuestion) {
+      // Set flag before completing to prevent redirect to home
+      setIsNavigatingToResults(true);
       const result = completeQuiz();
       if (result) {
         navigate('/results', { state: { result } });
