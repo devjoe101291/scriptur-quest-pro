@@ -12,6 +12,7 @@ import Quiz from "./pages/Quiz";
 import Results from "./pages/Results";
 import Progress from "./pages/Progress";
 import Settings from "./pages/Settings";
+import DailyChallenge from "./pages/DailyChallenge";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/results" element={<Results />} />
               <Route path="/progress" element={<Progress />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/daily-challenge" element={<DailyChallenge />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <BottomNavigation />
