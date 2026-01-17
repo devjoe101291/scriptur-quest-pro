@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   BookOpen, 
@@ -6,17 +6,34 @@ import {
   Trophy, 
   Play, 
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Calendar,
+  Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatCard from '@/components/StatCard';
 import { useApp } from '@/contexts/AppContext';
 import { bibleBooks } from '@/data/bible-books';
 import { cn } from '@/lib/utils';
+import { getDailyChallenge, getTodayString, getTimeUntilNextChallenge } from '@/lib/daily-challenge';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { progress, streak, currentSession, settings, resumeQuiz } = useApp();
+  
+  const dailyData = getDailyChallenge();
+  const isTodayCompleted = dailyData.date === getTodayString() && dailyData.completed;
+  const [countdown, setCountdown] = useState(getTimeUntilNextChallenge());
+  
+  // Update countdown
+  useEffect(() => {
+    if (isTodayCompleted) {
+      const interval = setInterval(() => {
+        setCountdown(getTimeUntilNextChallenge());
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isTodayCompleted]);
 
   const completedPercentage = Math.round(
     (progress.booksCompleted.length / bibleBooks.length) * 100
@@ -82,6 +99,74 @@ const Home: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Daily Challenge Card */}
+        <div className={cn(
+          'space-y-3',
+          settings.animationsEnabled && 'animate-slide-up'
+        )}>
+          <button
+            onClick={() => navigate('/daily-challenge')}
+            className={cn(
+              'w-full p-5 rounded-2xl text-left transition-all',
+              isTodayCompleted 
+                ? 'bg-card border border-border shadow-card' 
+                : 'royal-gradient text-primary-foreground shadow-card hover:opacity-95'
+            )}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  'w-12 h-12 rounded-xl flex items-center justify-center',
+                  isTodayCompleted ? 'bg-green-500/10' : 'bg-white/20'
+                )}>
+                  <Calendar className={cn(
+                    'h-6 w-6',
+                    isTodayCompleted ? 'text-green-500' : ''
+                  )} />
+                </div>
+                <div>
+                  <h3 className={cn(
+                    'font-display text-lg font-semibold',
+                    isTodayCompleted ? 'text-foreground' : ''
+                  )}>
+                    Daily Challenge
+                  </h3>
+                  {isTodayCompleted ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-green-500 text-sm font-medium">Completed!</span>
+                      <span className="text-xs text-muted-foreground">
+                        Score: {dailyData.result?.percentage}%
+                      </span>
+                    </div>
+                  ) : (
+                    <p className={cn(
+                      'text-sm',
+                      isTodayCompleted ? 'text-muted-foreground' : 'text-primary-foreground/80'
+                    )}>
+                      10 questions • New daily
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="text-right">
+                {isTodayCompleted ? (
+                  <div className="text-xs text-muted-foreground">
+                    <p>Next in</p>
+                    <p className="font-mono font-medium">
+                      {String(countdown.hours).padStart(2, '0')}:{String(countdown.minutes).padStart(2, '0')}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <Flame className="h-4 w-4" />
+                    <span className="font-bold">{dailyData.streak}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </button>
+        </div>
 
         {/* Quick Start */}
         <div className={cn(
