@@ -8,7 +8,8 @@ import {
   ArrowRight,
   Sparkles,
   Calendar,
-  Star
+  Star,
+  Award
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatCard from '@/components/StatCard';
@@ -16,6 +17,7 @@ import { useApp } from '@/contexts/AppContext';
 import { bibleBooks } from '@/data/bible-books';
 import { cn } from '@/lib/utils';
 import { getDailyChallenge, getTodayString, getTimeUntilNextChallenge } from '@/lib/daily-challenge';
+import { getUnlockedCount } from '@/lib/achievements';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -219,6 +221,29 @@ const Home: React.FC = () => {
               subtext="Keep going!"
             />
           </div>
+          
+          {/* Achievements Button */}
+          <button
+            onClick={() => navigate('/achievements')}
+            className={cn(
+              'w-full p-4 rounded-xl bg-card border border-border shadow-soft',
+              'flex items-center justify-between transition-all',
+              'hover:shadow-card hover:border-primary/30'
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg gold-gradient flex items-center justify-center">
+                <Award className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <div className="text-left">
+                <p className="font-medium text-foreground">Achievements</p>
+                <p className="text-xs text-muted-foreground">
+                  {getUnlockedCount().unlocked} of {getUnlockedCount().total} unlocked
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-5 w-5 text-muted-foreground" />
+          </button>
         </div>
 
         {/* Featured Books */}

@@ -9,12 +9,14 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  ArrowRight
+  ArrowRight,
+  Award
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import QuizOption from '@/components/QuizOption';
 import ScoreCircle from '@/components/ScoreCircle';
+import AchievementUnlockToast from '@/components/AchievementUnlockToast';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/contexts/AppContext';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
@@ -29,6 +31,7 @@ import {
   DailyChallengeData
 } from '@/lib/daily-challenge';
 import { QuizSession, QuizResult, formatTime } from '@/lib/quiz-generator';
+import { checkAchievements, Achievement, getUnlockedCount } from '@/lib/achievements';
 
 const DailyChallenge: React.FC = () => {
   const navigate = useNavigate();
@@ -42,6 +45,8 @@ const DailyChallenge: React.FC = () => {
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
   const [countdown, setCountdown] = useState(getTimeUntilNextChallenge());
   const [isStarted, setIsStarted] = useState(false);
+  const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
+  const [currentAchievementIndex, setCurrentAchievementIndex] = useState(0);
 
   // Update countdown timer
   useEffect(() => {
@@ -98,8 +103,23 @@ const DailyChallenge: React.FC = () => {
       const result = completeDailyChallenge(session);
       setQuizResult(result);
       setShowResult(true);
-      setDailyData(getDailyChallenge());
+      const updatedData = getDailyChallenge();
+      setDailyData(updatedData);
       playComplete();
+      
+      // Check for new achievements
+      const unlockedAchievements = checkAchievements({
+        streak: updatedData.streak,
+        longestStreak: updatedData.longestStreak,
+        totalChallengesCompleted: updatedData.totalChallengesCompleted,
+        perfectDays: updatedData.perfectDays,
+        lastCompletedTime: Date.now(),
+        lastTimeTaken: result.timeTaken,
+      });
+      
+      if (unlockedAchievements.length > 0) {
+        setNewAchievements(unlockedAchievements);
+      }
     } else {
       // Move to next question
       const updatedSession = {
@@ -112,10 +132,25 @@ const DailyChallenge: React.FC = () => {
     }
   }, [session, playTap, playComplete]);
 
+  const handleAchievementClose = () => {
+    if (currentAchievementIndex < newAchievements.length - 1) {
+      setCurrentAchievementIndex(prev => prev + 1);
+    } else {
+      setNewAchievements([]);
+      setCurrentAchievementIndex(0);
+    }
+  };
+
   // Show completed view
   if (isTodayCompleted && !isStarted) {
     return (
       <div className="min-h-screen pb-24 parchment-gradient">
+        {newAchievements.length > 0 && newAchievements[currentAchievementIndex] && (
+          <AchievementUnlockToast
+            achievement={newAchievements[currentAchievementIndex]}
+            onClose={handleAchievementClose}
+          />
+        )}
         <div className="safe-top px-5 pt-4 pb-6">
           <div className="flex items-center gap-3 mb-6">
             <Button
@@ -202,6 +237,12 @@ const DailyChallenge: React.FC = () => {
   if (showResult && quizResult) {
     return (
       <div className="min-h-screen pb-24 parchment-gradient">
+        {newAchievements.length > 0 && newAchievements[currentAchievementIndex] && (
+          <AchievementUnlockToast
+            achievement={newAchievements[currentAchievementIndex]}
+            onClose={handleAchievementClose}
+          />
+        )}
         <div className="safe-top px-5 pt-4 pb-6">
           <div className="text-center space-y-6">
             <div className={cn(
