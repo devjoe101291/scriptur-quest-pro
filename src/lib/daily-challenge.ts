@@ -1,5 +1,6 @@
 import { questions, QuizQuestion } from '@/data/questions';
 import { QuizSession, QuizResult, calculateResults } from './quiz-generator';
+import { addUserScore, getLeaderboard } from './leaderboard';
 
 const STORAGE_KEY = 'bible-trivia-daily-challenge';
 const DAILY_QUESTIONS_COUNT = 10;
@@ -213,6 +214,9 @@ export const completeDailyChallenge = (session: QuizSession): QuizResult => {
     totalChallengesCompleted: data.totalChallengesCompleted + 1,
     perfectDays: data.perfectDays + (isPerfect ? 1 : 0),
   });
+  
+  // Add score to leaderboard
+  addUserScore(result.correctAnswers, result.percentage, newStreak);
   
   return result;
 };

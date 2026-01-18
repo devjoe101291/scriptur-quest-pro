@@ -207,6 +207,29 @@
   .safe-top {
     padding-top: max(env(safe-area-inset-top), 1rem);
   }
+
+  .safe-left {
+    padding-left: max(env(safe-area-inset-left), 0px);
+  }
+
+  .safe-right {
+    padding-right: max(env(safe-area-inset-right), 0px);
+  }
+
+  /* Android-specific adjustments */
+  .android-safe {
+    padding-top: max(env(safe-area-inset-top), 24px);
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  }
+
+  /* Keyboard visible state */
+  .keyboard-visible .safe-bottom {
+    padding-bottom: 0;
+  }
+
+  .keyboard-visible nav {
+    display: none;
+  }
 }
 
 @layer utilities {
