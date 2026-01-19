@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils';
 import { useApp } from '@/contexts/AppContext';
 import { hapticSelection } from '@/lib/capacitor';
 
+// Bottom navigation with 5 tabs for mobile app
+
 interface NavItem {
   path: string;
   icon: React.ReactNode;
