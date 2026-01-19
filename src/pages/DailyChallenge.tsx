@@ -18,6 +18,7 @@ import { Progress } from '@/components/ui/progress';
 import QuizOption from '@/components/QuizOption';
 import ScoreCircle from '@/components/ScoreCircle';
 import StudyPanel from '@/components/StudyPanel';
+import BookmarkButton from '@/components/BookmarkButton';
 import AchievementUnlockToast from '@/components/AchievementUnlockToast';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/contexts/AppContext';
@@ -424,9 +425,12 @@ const DailyChallenge: React.FC = () => {
           'p-5 rounded-2xl bg-card border border-border shadow-card mb-6',
           settings.animationsEnabled && 'animate-fade-in'
         )}>
-          <p className="text-lg font-medium text-foreground leading-relaxed">
-            {currentQuestion.question}
-          </p>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-lg font-medium text-foreground leading-relaxed flex-1">
+              {currentQuestion.question}
+            </p>
+            <BookmarkButton questionId={currentQuestion.id} size="md" />
+          </div>
         </div>
         
         {/* Options */}

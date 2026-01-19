@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   CURRENT_SESSION: 'bible-trivia-current-session',
   SETTINGS: 'bible-trivia-settings',
   STREAK: 'bible-trivia-streak',
+  BOOKMARKS: 'bible-trivia-bookmarks',
 } as const;
 
 export interface UserProgress {
@@ -167,10 +168,37 @@ export const updateStreak = (): StreakData => {
   return streak;
 };
 
+// Bookmarks
+export const getBookmarks = (): string[] =>
+  getItem(STORAGE_KEYS.BOOKMARKS, []);
+
+export const saveBookmarks = (bookmarks: string[]): void =>
+  setItem(STORAGE_KEYS.BOOKMARKS, bookmarks);
+
+export const toggleBookmark = (questionId: string): boolean => {
+  const bookmarks = getBookmarks();
+  const index = bookmarks.indexOf(questionId);
+  
+  if (index > -1) {
+    bookmarks.splice(index, 1);
+    saveBookmarks(bookmarks);
+    return false; // Removed
+  } else {
+    bookmarks.push(questionId);
+    saveBookmarks(bookmarks);
+    return true; // Added
+  }
+};
+
+export const isBookmarked = (questionId: string): boolean => {
+  return getBookmarks().includes(questionId);
+};
+
 // Reset all data
 export const resetAllProgress = (): void => {
   localStorage.removeItem(STORAGE_KEYS.SCORES);
   localStorage.removeItem(STORAGE_KEYS.PROGRESS);
   localStorage.removeItem(STORAGE_KEYS.CURRENT_SESSION);
   localStorage.removeItem(STORAGE_KEYS.STREAK);
+  localStorage.removeItem(STORAGE_KEYS.BOOKMARKS);
 };

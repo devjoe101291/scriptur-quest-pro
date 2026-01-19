@@ -17,6 +17,7 @@ import Settings from "./pages/Settings";
 import DailyChallenge from "./pages/DailyChallenge";
 import Achievements from "./pages/Achievements";
 import Leaderboard from "./pages/Leaderboard";
+import Bookmarks from "./pages/Bookmarks";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => {
                 <Route path="/daily-challenge" element={<DailyChallenge />} />
                 <Route path="/achievements" element={<Achievements />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/bookmarks" element={<Bookmarks />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <BottomNavigation />

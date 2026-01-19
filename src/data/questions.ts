@@ -17,6 +17,7 @@ import { psalmsQuestions } from './questions/psalms-questions';
 import { matthewQuestions } from './questions/matthew-questions';
 import { johnQuestions } from './questions/john-questions';
 import { allAdditionalQuestions } from './questions/additional-questions';
+import { allCategorizedQuestions } from './questions/categorized-questions';
 import {
   leviticusQuestions,
   numbersQuestions,
@@ -150,6 +151,7 @@ export const questions: QuizQuestion[] = [
   ...judeQuestions,
   ...revelationQuestions,
   ...allAdditionalQuestions,
+  ...allCategorizedQuestions,
 ];
 
 export const getQuestionsByBook = (bookId: string) =>

@@ -8,8 +8,8 @@ import {
   ArrowRight,
   Sparkles,
   Calendar,
-  Star,
-  Award
+  Award,
+  Bookmark
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatCard from '@/components/StatCard';
@@ -18,6 +18,7 @@ import { bibleBooks } from '@/data/bible-books';
 import { cn } from '@/lib/utils';
 import { getDailyChallenge, getTodayString, getTimeUntilNextChallenge } from '@/lib/daily-challenge';
 import { getUnlockedCount } from '@/lib/achievements';
+import { getBookmarks } from '@/lib/storage';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -239,6 +240,29 @@ const Home: React.FC = () => {
                 <p className="font-medium text-foreground">Achievements</p>
                 <p className="text-xs text-muted-foreground">
                   {getUnlockedCount().unlocked} of {getUnlockedCount().total} unlocked
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-5 w-5 text-muted-foreground" />
+          </button>
+
+          {/* Bookmarks Button */}
+          <button
+            onClick={() => navigate('/bookmarks')}
+            className={cn(
+              'w-full p-4 rounded-xl bg-card border border-border shadow-soft',
+              'flex items-center justify-between transition-all',
+              'hover:shadow-card hover:border-primary/30'
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <Bookmark className="h-5 w-5 text-amber-500" />
+              </div>
+              <div className="text-left">
+                <p className="font-medium text-foreground">Saved Questions</p>
+                <p className="text-xs text-muted-foreground">
+                  {getBookmarks().length} bookmarked for review
                 </p>
               </div>
             </div>

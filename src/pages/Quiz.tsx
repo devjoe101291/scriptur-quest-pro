@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, ArrowRight, BookOpen, GraduationCap } from 'lucide-react';
+import { X, ArrowRight, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import QuizProgress from '@/components/QuizProgress';
 import QuizOption from '@/components/QuizOption';
 import StudyPanel from '@/components/StudyPanel';
+import BookmarkButton from '@/components/BookmarkButton';
 import { useApp } from '@/contexts/AppContext';
 import { getBookById } from '@/data/bible-books';
 import { cn } from '@/lib/utils';
@@ -143,9 +144,12 @@ const Quiz: React.FC = () => {
           'p-6 rounded-2xl bg-card border border-border shadow-card mb-6',
           settings.animationsEnabled && !isTransitioning && 'animate-scale-in'
         )}>
-          <p className="text-lg font-medium text-foreground leading-relaxed">
-            {currentQuestion.question}
-          </p>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-lg font-medium text-foreground leading-relaxed flex-1">
+              {currentQuestion.question}
+            </p>
+            <BookmarkButton questionId={currentQuestion.id} size="md" />
+          </div>
           {currentQuestion.reference && showResult && (
             <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
               <BookOpen className="h-4 w-4" />
