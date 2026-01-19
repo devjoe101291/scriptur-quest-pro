@@ -22,6 +22,7 @@ export interface AppSettings {
   animationsEnabled: boolean;
   defaultDifficulty: 'easy' | 'medium' | 'hard' | 'all';
   hapticFeedback: boolean;
+  studyMode: boolean;
 }
 
 export interface StreakData {
@@ -36,6 +37,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   animationsEnabled: true,
   defaultDifficulty: 'all',
   hapticFeedback: true,
+  studyMode: true,
 };
 
 const DEFAULT_PROGRESS: UserProgress = {

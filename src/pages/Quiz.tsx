@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, ArrowRight, BookOpen } from 'lucide-react';
+import { X, ArrowRight, BookOpen, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import QuizProgress from '@/components/QuizProgress';
 import QuizOption from '@/components/QuizOption';
+import StudyPanel from '@/components/StudyPanel';
 import { useApp } from '@/contexts/AppContext';
 import { getBookById } from '@/data/bible-books';
 import { cn } from '@/lib/utils';
@@ -169,16 +170,24 @@ const Quiz: React.FC = () => {
           ))}
         </div>
 
-        {/* Explanation */}
-        {showResult && currentQuestion.explanation && (
+        {/* Study Mode Panel */}
+        {showResult && settings.studyMode && (
+          <StudyPanel
+            reference={currentQuestion.reference}
+            explanation={currentQuestion.explanation}
+            isCorrect={selectedAnswer === currentQuestion.correctAnswer}
+            animationsEnabled={settings.animationsEnabled}
+          />
+        )}
+
+        {/* Simple feedback when study mode is off */}
+        {showResult && !settings.studyMode && currentQuestion.reference && (
           <div className={cn(
-            'mt-6 p-4 rounded-xl bg-secondary/50 border border-border',
-            settings.animationsEnabled && 'animate-slide-up'
+            'mt-6 flex items-center gap-2 text-sm text-muted-foreground',
+            settings.animationsEnabled && 'animate-fade-in'
           )}>
-            <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Explanation: </span>
-              {currentQuestion.explanation}
-            </p>
+            <BookOpen className="h-4 w-4" />
+            <span>{currentQuestion.reference}</span>
           </div>
         )}
       </div>
