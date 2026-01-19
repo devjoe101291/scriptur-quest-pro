@@ -10,12 +10,14 @@ import {
   CheckCircle2,
   XCircle,
   ArrowRight,
-  Award
+  Award,
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import QuizOption from '@/components/QuizOption';
 import ScoreCircle from '@/components/ScoreCircle';
+import StudyPanel from '@/components/StudyPanel';
 import AchievementUnlockToast from '@/components/AchievementUnlockToast';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/contexts/AppContext';
@@ -467,18 +469,31 @@ const DailyChallenge: React.FC = () => {
                 )}>
                   {isCorrect ? 'Correct!' : 'Incorrect'}
                 </p>
-                {currentQuestion.explanation && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {currentQuestion.explanation}
-                  </p>
-                )}
               </div>
             </div>
+
+            {/* Study Mode Panel */}
+            {settings.studyMode && (
+              <StudyPanel
+                reference={currentQuestion.reference}
+                explanation={currentQuestion.explanation}
+                isCorrect={isCorrect}
+                animationsEnabled={settings.animationsEnabled}
+              />
+            )}
+
+            {/* Simple reference when study mode is off */}
+            {!settings.studyMode && currentQuestion.reference && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                <BookOpen className="h-4 w-4" />
+                <span>{currentQuestion.reference}</span>
+              </div>
+            )}
             
             <Button
               onClick={handleNext}
               size="lg"
-              className="w-full h-14 rounded-xl gold-gradient text-primary-foreground"
+              className="w-full h-14 rounded-xl gold-gradient text-primary-foreground mt-4"
             >
               {session.currentIndex >= session.questions.length - 1 ? 'See Results' : 'Next Question'}
               <ArrowRight className="h-5 w-5 ml-2" />

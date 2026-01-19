@@ -266,6 +266,25 @@ const Settings: React.FC = () => {
           )}
           style={settings.animationsEnabled ? { animationDelay: '0.2s' } : undefined}
           >
+            {/* Study Mode */}
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-secondary flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-secondary-foreground" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground">Study Mode</p>
+                  <p className="text-sm text-muted-foreground truncate">Show verses & explanations</p>
+                </div>
+              </div>
+              <Switch
+                checked={settings.studyMode}
+                onCheckedChange={(checked) => updateSettings({ studyMode: checked })}
+              />
+            </div>
+
+            <div className="border-t border-border" />
+
             {/* Default Difficulty */}
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3 flex-1 min-w-0">
