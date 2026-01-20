@@ -1,3 +1,14 @@
+export type QuizCategory = 'miracles' | 'parables' | 'prophecy' | 'women' | 'kings' | 'angels';
+
+export const QUIZ_CATEGORIES: { id: QuizCategory; name: string; icon: string }[] = [
+  { id: 'miracles', name: 'Miracles', icon: '✨' },
+  { id: 'parables', name: 'Parables', icon: '📖' },
+  { id: 'prophecy', name: 'Prophecy', icon: '🔮' },
+  { id: 'women', name: 'Women of the Bible', icon: '👑' },
+  { id: 'kings', name: 'Kings & Leaders', icon: '⚔️' },
+  { id: 'angels', name: 'Angels & Visions', icon: '👼' },
+];
+
 export interface QuizQuestion {
   id: string;
   bookId: string;
@@ -8,6 +19,7 @@ export interface QuizQuestion {
   correctAnswer: number;
   reference?: string;
   explanation?: string;
+  category?: QuizCategory;
 }
 
 // Import all book-specific questions
@@ -159,6 +171,12 @@ export const getQuestionsByBook = (bookId: string) =>
 
 export const getQuestionsByDifficulty = (bookId: string, difficulty: 'easy' | 'medium' | 'hard') =>
   questions.filter(q => q.bookId === bookId && q.difficulty === difficulty);
+
+export const getQuestionsByCategory = (category: QuizCategory) =>
+  questions.filter(q => q.category === category);
+
+export const getCategoryQuestionCount = (category: QuizCategory) =>
+  questions.filter(q => q.category === category).length;
 
 export const shuffleQuestions = (questionsArray: QuizQuestion[]): QuizQuestion[] => {
   const shuffled = [...questionsArray];

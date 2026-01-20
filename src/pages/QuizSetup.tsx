@@ -3,8 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Play, BookOpen, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DifficultySelector from '@/components/DifficultySelector';
+import CategorySelector from '@/components/CategorySelector';
 import { getBookById } from '@/data/bible-books';
-import { getQuestionsByBook } from '@/data/questions';
+import { getQuestionsByBook, QuizCategory } from '@/data/questions';
 import { useApp } from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +16,7 @@ const QuizSetup: React.FC = () => {
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard' | 'all'>(
     settings.defaultDifficulty
   );
+  const [category, setCategory] = useState<QuizCategory | 'all'>('all');
 
   const book = bookId ? getBookById(bookId) : null;
   const questions = bookId ? getQuestionsByBook(bookId) : [];
@@ -34,12 +36,12 @@ const QuizSetup: React.FC = () => {
   }
 
   const handleStart = () => {
-    startQuiz(book.id, difficulty);
+    startQuiz(book.id, difficulty, category);
     navigate('/quiz');
   };
 
   return (
-    <div className="min-h-screen parchment-gradient">
+    <div className="min-h-screen parchment-gradient pb-8">
       {/* Header */}
       <div className="safe-top px-5 pt-4 pb-6">
         <button
@@ -90,11 +92,27 @@ const QuizSetup: React.FC = () => {
 
       {/* Content */}
       <div className="px-5 space-y-6">
-        {/* Difficulty Selection */}
+        {/* Category Selection */}
         <div className={cn(
           'space-y-3',
           settings.animationsEnabled && 'animate-slide-up'
         )}>
+          <h2 className="font-display text-lg font-semibold text-foreground px-1">
+            Select Category
+          </h2>
+          <CategorySelector
+            selected={category}
+            onSelect={setCategory}
+          />
+        </div>
+
+        {/* Difficulty Selection */}
+        <div className={cn(
+          'space-y-3',
+          settings.animationsEnabled && 'animate-slide-up'
+        )}
+        style={settings.animationsEnabled ? { animationDelay: '0.1s' } : undefined}
+        >
           <h2 className="font-display text-lg font-semibold text-foreground px-1">
             Select Difficulty
           </h2>
@@ -109,7 +127,7 @@ const QuizSetup: React.FC = () => {
           'p-4 rounded-xl bg-secondary/50 border border-border',
           settings.animationsEnabled && 'animate-slide-up'
         )}
-        style={settings.animationsEnabled ? { animationDelay: '0.1s' } : undefined}
+        style={settings.animationsEnabled ? { animationDelay: '0.2s' } : undefined}
         >
           <h3 className="font-medium text-foreground mb-2">Quiz Info</h3>
           <ul className="text-sm text-muted-foreground space-y-1">
@@ -124,20 +142,20 @@ const QuizSetup: React.FC = () => {
         <Button
           onClick={handleStart}
           size="lg"
-          disabled={questions.length === 0}
+          disabled={questions.length === 0 && category === 'all'}
           className={cn(
             'w-full h-14 rounded-xl gold-gradient text-primary-foreground',
             'shadow-glow hover:opacity-90 transition-opacity',
             'font-display font-semibold text-lg',
             settings.animationsEnabled && 'animate-slide-up'
           )}
-          style={settings.animationsEnabled ? { animationDelay: '0.2s' } : undefined}
+          style={settings.animationsEnabled ? { animationDelay: '0.3s' } : undefined}
         >
           <Play className="h-5 w-5 mr-3" />
           Start Quiz
         </Button>
 
-        {questions.length === 0 && (
+        {questions.length === 0 && category === 'all' && (
           <p className="text-center text-muted-foreground text-sm">
             No questions available for this book yet.
           </p>
