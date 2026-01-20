@@ -18,6 +18,7 @@ import DailyChallenge from "./pages/DailyChallenge";
 import Achievements from "./pages/Achievements";
 import Leaderboard from "./pages/Leaderboard";
 import Bookmarks from "./pages/Bookmarks";
+import Flashcards from "./pages/Flashcards";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => {
                 <Route path="/achievements" element={<Achievements />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/bookmarks" element={<Bookmarks />} />
+                <Route path="/flashcards" element={<Flashcards />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <BottomNavigation />

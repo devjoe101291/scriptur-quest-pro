@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Bookmark, BookOpen, Trash2, Play } from 'lucide-react';
+import { ArrowLeft, Bookmark, BookOpen, Trash2, Brain, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   AlertDialog,
@@ -104,6 +104,29 @@ const Bookmarks: React.FC = () => {
             </AlertDialog>
           )}
         </div>
+
+        {/* Flashcard Mode Link */}
+        {bookmarkedQuestions.length > 0 && (
+          <button
+            onClick={() => navigate('/flashcards')}
+            className={cn(
+              'flex items-center gap-3 w-full mt-4 p-4 rounded-xl',
+              'bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors',
+              settings.animationsEnabled && 'animate-fade-in'
+            )}
+          >
+            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+              <Brain className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1 text-left">
+              <div className="font-medium text-foreground">Flashcard Mode</div>
+              <div className="text-sm text-muted-foreground">
+                Study with spaced repetition
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-primary" />
+          </button>
+        )}
       </div>
 
       {/* Content */}
