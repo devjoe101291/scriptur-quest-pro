@@ -16,6 +16,7 @@ import {
   resetAllProgress,
 } from '@/lib/storage';
 import { QuizSession, QuizResult, generateQuizSession, calculateResults } from '@/lib/quiz-generator';
+import { QuizCategory } from '@/data/questions';
 
 interface AppContextType {
   // Settings
@@ -28,7 +29,7 @@ interface AppContextType {
   
   // Quiz
   currentSession: QuizSession | null;
-  startQuiz: (bookId: string, difficulty?: 'easy' | 'medium' | 'hard' | 'all') => void;
+  startQuiz: (bookId: string, difficulty?: 'easy' | 'medium' | 'hard' | 'all', category?: QuizCategory | 'all') => void;
   answerQuestion: (answerIndex: number) => void;
   nextQuestion: () => void;
   completeQuiz: () => QuizResult | null;
@@ -72,8 +73,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   }, []);
 
-  const startQuiz = useCallback((bookId: string, difficulty: 'easy' | 'medium' | 'hard' | 'all' = 'all') => {
-    const session = generateQuizSession(bookId, difficulty);
+  const startQuiz = useCallback((
+    bookId: string, 
+    difficulty: 'easy' | 'medium' | 'hard' | 'all' = 'all',
+    category?: QuizCategory | 'all'
+  ) => {
+    const session = generateQuizSession(bookId, difficulty, category);
     setCurrentSession(session);
     saveCurrentSession(session);
     
