@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">scriptur-quest-pro</string>
+    <string name="title_activity_main">scriptur-quest-pro</string>
+    <string name="package_name">com.devjoe.scripturquestpro</string>
+    <string name="custom_url_scheme">com.devjoe.scripturquestpro</string>
+</resources>

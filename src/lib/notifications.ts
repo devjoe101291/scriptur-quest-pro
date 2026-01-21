@@ -43,30 +43,31 @@ export const isNativePlatform = (): boolean => {
 
 // Request push notification permissions
 export const requestPushPermission = async (): Promise<boolean> => {
-  if (!isNativePlatform()) {
-    console.log('Push notifications only available on native platforms');
-    return false;
-  }
+  // if (!isNativePlatform()) {
+  //   console.log('Push notifications only available on native platforms');
+  //   return false;
+  // }
   
-  try {
-    let permStatus = await PushNotifications.checkPermissions();
+  // try {
+  //   let permStatus = await PushNotifications.checkPermissions();
     
-    if (permStatus.receive === 'prompt') {
-      permStatus = await PushNotifications.requestPermissions();
-    }
+  //   if (permStatus.receive === 'prompt') {
+  //     permStatus = await PushNotifications.requestPermissions();
+  //   }
     
-    if (permStatus.receive !== 'granted') {
-      console.log('Push notification permission denied');
-      return false;
-    }
+  //   if (permStatus.receive !== 'granted') {
+  //     console.log('Push notification permission denied');
+  //     return false;
+  //   }
     
-    // Register for push notifications
-    await PushNotifications.register();
-    return true;
-  } catch (error) {
-    console.error('Error requesting push permission:', error);
-    return false;
-  }
+  //   // Register for push notifications
+  //   await PushNotifications.register();
+  //   return true;
+  // } catch (error) {
+  //   console.error('Error requesting push permission:', error);
+  //   return false;
+  // }
+   return false;
 };
 
 // Initialize push notifications with listeners
@@ -217,7 +218,7 @@ export const initializeLocalNotifications = async (): Promise<void> => {
 
 // Initialize all notifications
 export const initializeNotifications = async (): Promise<void> => {
-  await initializePushNotifications();
+  // await initializePushNotifications();
   await initializeLocalNotifications();
 };
 
