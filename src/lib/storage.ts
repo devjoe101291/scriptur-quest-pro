@@ -9,12 +9,20 @@ const STORAGE_KEYS = {
   BOOKMARKS: "bible-trivia-bookmarks",
 } as const;
 
+export interface CategoryScore {
+  totalQuestions: number;
+  correctAnswers: number;
+  quizzesTaken: number;
+  bestPercentage: number;
+}
+
 export interface UserProgress {
   booksCompleted: string[];
   totalQuizzesTaken: number;
   totalCorrectAnswers: number;
   totalQuestions: number;
   bestScores: Record<string, number>; // bookId -> best percentage
+  categoryScores: Record<string, CategoryScore>; // category -> scores
 }
 
 export interface AppSettings {
