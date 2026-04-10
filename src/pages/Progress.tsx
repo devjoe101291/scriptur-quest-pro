@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Progress as ProgressBar } from '@/components/ui/progress';
 import StatCard from '@/components/StatCard';
+import CategoryProgress from '@/components/CategoryProgress';
 import { useApp } from '@/contexts/AppContext';
 import { bibleBooks, getBooksByTestament } from '@/data/bible-books';
 import { cn } from '@/lib/utils';
@@ -161,6 +162,12 @@ const Progress: React.FC = () => {
             />
           </div>
         </div>
+
+        {/* Category Mastery */}
+        <CategoryProgress
+          categoryScores={progress.categoryScores ?? {}}
+          animationsEnabled={settings.animationsEnabled}
+        />
 
         {/* Mastered Books */}
         {progress.booksCompleted.length > 0 && (
