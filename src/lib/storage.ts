@@ -150,6 +150,20 @@ const normalizeProgress = (raw: unknown): UserProgress => {
     }
   }
 
+  const categoryScores: Record<string, CategoryScore> = {};
+  if (isRecord(raw.categoryScores)) {
+    for (const [k, v] of Object.entries(raw.categoryScores)) {
+      if (isRecord(v)) {
+        categoryScores[k] = {
+          totalQuestions: typeof v.totalQuestions === "number" ? v.totalQuestions : 0,
+          correctAnswers: typeof v.correctAnswers === "number" ? v.correctAnswers : 0,
+          quizzesTaken: typeof v.quizzesTaken === "number" ? v.quizzesTaken : 0,
+          bestPercentage: typeof v.bestPercentage === "number" ? v.bestPercentage : 0,
+        };
+      }
+    }
+  }
+
   return {
     ...DEFAULT_PROGRESS,
     ...raw,
@@ -167,6 +181,7 @@ const normalizeProgress = (raw: unknown): UserProgress => {
         ? raw.totalQuestions
         : 0,
     bestScores,
+    categoryScores,
   };
 };
 
