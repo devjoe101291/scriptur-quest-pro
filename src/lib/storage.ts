@@ -55,6 +55,7 @@ const DEFAULT_PROGRESS: UserProgress = {
   totalCorrectAnswers: 0,
   totalQuestions: 0,
   bestScores: {},
+  categoryScores: {},
 };
 
 const DEFAULT_STREAK: StreakData = {
@@ -246,6 +247,7 @@ export const updateProgressWithResult = (result: QuizResult): UserProgress => {
     totalQuestions: p.totalQuestions + result.totalQuestions,
     bestScores: { ...p.bestScores },
     booksCompleted: [...p.booksCompleted],
+    categoryScores: { ...p.categoryScores },
   };
 
   const currentBest = updated.bestScores[result.bookId] ?? 0;
@@ -255,6 +257,23 @@ export const updateProgressWithResult = (result: QuizResult): UserProgress => {
 
   if (result.percentage >= 80 && !updated.booksCompleted.includes(result.bookId)) {
     updated.booksCompleted.push(result.bookId);
+  }
+
+  // Update category scores if quiz had a category
+  if (result.category && result.category !== 'all') {
+    const cat = result.category;
+    const existing = updated.categoryScores[cat] ?? {
+      totalQuestions: 0,
+      correctAnswers: 0,
+      quizzesTaken: 0,
+      bestPercentage: 0,
+    };
+    updated.categoryScores[cat] = {
+      totalQuestions: existing.totalQuestions + result.totalQuestions,
+      correctAnswers: existing.correctAnswers + result.correctAnswers,
+      quizzesTaken: existing.quizzesTaken + 1,
+      bestPercentage: Math.max(existing.bestPercentage, result.percentage),
+    };
   }
 
   saveProgress(updated);
