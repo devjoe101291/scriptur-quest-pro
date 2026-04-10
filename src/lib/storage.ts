@@ -9,12 +9,20 @@ const STORAGE_KEYS = {
   BOOKMARKS: "bible-trivia-bookmarks",
 } as const;
 
+export interface CategoryScore {
+  totalQuestions: number;
+  correctAnswers: number;
+  quizzesTaken: number;
+  bestPercentage: number;
+}
+
 export interface UserProgress {
   booksCompleted: string[];
   totalQuizzesTaken: number;
   totalCorrectAnswers: number;
   totalQuestions: number;
   bestScores: Record<string, number>; // bookId -> best percentage
+  categoryScores: Record<string, CategoryScore>; // category -> scores
 }
 
 export interface AppSettings {
@@ -47,6 +55,7 @@ const DEFAULT_PROGRESS: UserProgress = {
   totalCorrectAnswers: 0,
   totalQuestions: 0,
   bestScores: {},
+  categoryScores: {},
 };
 
 const DEFAULT_STREAK: StreakData = {
@@ -141,6 +150,20 @@ const normalizeProgress = (raw: unknown): UserProgress => {
     }
   }
 
+  const categoryScores: Record<string, CategoryScore> = {};
+  if (isRecord(raw.categoryScores)) {
+    for (const [k, v] of Object.entries(raw.categoryScores)) {
+      if (isRecord(v)) {
+        categoryScores[k] = {
+          totalQuestions: typeof v.totalQuestions === "number" ? v.totalQuestions : 0,
+          correctAnswers: typeof v.correctAnswers === "number" ? v.correctAnswers : 0,
+          quizzesTaken: typeof v.quizzesTaken === "number" ? v.quizzesTaken : 0,
+          bestPercentage: typeof v.bestPercentage === "number" ? v.bestPercentage : 0,
+        };
+      }
+    }
+  }
+
   return {
     ...DEFAULT_PROGRESS,
     ...raw,
@@ -158,6 +181,7 @@ const normalizeProgress = (raw: unknown): UserProgress => {
         ? raw.totalQuestions
         : 0,
     bestScores,
+    categoryScores,
   };
 };
 
@@ -238,6 +262,7 @@ export const updateProgressWithResult = (result: QuizResult): UserProgress => {
     totalQuestions: p.totalQuestions + result.totalQuestions,
     bestScores: { ...p.bestScores },
     booksCompleted: [...p.booksCompleted],
+    categoryScores: { ...p.categoryScores },
   };
 
   const currentBest = updated.bestScores[result.bookId] ?? 0;
@@ -247,6 +272,23 @@ export const updateProgressWithResult = (result: QuizResult): UserProgress => {
 
   if (result.percentage >= 80 && !updated.booksCompleted.includes(result.bookId)) {
     updated.booksCompleted.push(result.bookId);
+  }
+
+  // Update category scores if quiz had a category
+  if (result.category && result.category !== 'all') {
+    const cat = result.category;
+    const existing = updated.categoryScores[cat] ?? {
+      totalQuestions: 0,
+      correctAnswers: 0,
+      quizzesTaken: 0,
+      bestPercentage: 0,
+    };
+    updated.categoryScores[cat] = {
+      totalQuestions: existing.totalQuestions + result.totalQuestions,
+      correctAnswers: existing.correctAnswers + result.correctAnswers,
+      quizzesTaken: existing.quizzesTaken + 1,
+      bestPercentage: Math.max(existing.bestPercentage, result.percentage),
+    };
   }
 
   saveProgress(updated);
